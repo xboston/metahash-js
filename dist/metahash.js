@@ -1879,7 +1879,8 @@ function toByteArray (b64) {
     ? validLen - 4
     : validLen
 
-  for (var i = 0; i < len; i += 4) {
+  var i
+  for (i = 0; i < len; i += 4) {
     tmp =
       (revLookup[b64.charCodeAt(i)] << 18) |
       (revLookup[b64.charCodeAt(i + 1)] << 12) |
@@ -5476,6 +5477,7 @@ if (typeof self === 'object') {
 
 var base64 = require('base64-js')
 var ieee754 = require('ieee754')
+var customInspectSymbol = typeof Symbol === 'function' ? Symbol.for('nodejs.util.inspect.custom') : null
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -5512,7 +5514,9 @@ function typedArraySupport () {
   // Can typed array instances can be augmented?
   try {
     var arr = new Uint8Array(1)
-    arr.__proto__ = { __proto__: Uint8Array.prototype, foo: function () { return 42 } }
+    var proto = { foo: function () { return 42 } }
+    Object.setPrototypeOf(proto, Uint8Array.prototype)
+    Object.setPrototypeOf(arr, proto)
     return arr.foo() === 42
   } catch (e) {
     return false
@@ -5541,7 +5545,7 @@ function createBuffer (length) {
   }
   // Return an augmented `Uint8Array` instance
   var buf = new Uint8Array(length)
-  buf.__proto__ = Buffer.prototype
+  Object.setPrototypeOf(buf, Buffer.prototype)
   return buf
 }
 
@@ -5591,7 +5595,7 @@ function from (value, encodingOrOffset, length) {
   }
 
   if (value == null) {
-    throw TypeError(
+    throw new TypeError(
       'The first argument must be one of type string, Buffer, ArrayBuffer, Array, ' +
       'or Array-like Object. Received type ' + (typeof value)
     )
@@ -5643,8 +5647,8 @@ Buffer.from = function (value, encodingOrOffset, length) {
 
 // Note: Change prototype *after* Buffer.from is defined to workaround Chrome bug:
 // https://github.com/feross/buffer/pull/148
-Buffer.prototype.__proto__ = Uint8Array.prototype
-Buffer.__proto__ = Uint8Array
+Object.setPrototypeOf(Buffer.prototype, Uint8Array.prototype)
+Object.setPrototypeOf(Buffer, Uint8Array)
 
 function assertSize (size) {
   if (typeof size !== 'number') {
@@ -5748,7 +5752,8 @@ function fromArrayBuffer (array, byteOffset, length) {
   }
 
   // Return an augmented `Uint8Array` instance
-  buf.__proto__ = Buffer.prototype
+  Object.setPrototypeOf(buf, Buffer.prototype)
+
   return buf
 }
 
@@ -6070,6 +6075,9 @@ Buffer.prototype.inspect = function inspect () {
   if (this.length > max) str += ' ... '
   return '<Buffer ' + str + '>'
 }
+if (customInspectSymbol) {
+  Buffer.prototype[customInspectSymbol] = Buffer.prototype.inspect
+}
 
 Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
   if (isInstance(target, Uint8Array)) {
@@ -6195,7 +6203,7 @@ function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
         return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
       }
     }
-    return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
+    return arrayIndexOf(buffer, [val], byteOffset, encoding, dir)
   }
 
   throw new TypeError('val must be string, number or Buffer')
@@ -6561,7 +6569,8 @@ Buffer.prototype.slice = function slice (start, end) {
 
   var newBuf = this.subarray(start, end)
   // Return an augmented `Uint8Array` instance
-  newBuf.__proto__ = Buffer.prototype
+  Object.setPrototypeOf(newBuf, Buffer.prototype)
+
   return newBuf
 }
 
@@ -15940,7 +15949,7 @@ module.exports={
   "_resolved": "https://registry.npmjs.org/dohdec/-/dohdec-2.0.0.tgz",
   "_shasum": "060f85d262d6e82bbb445c428814febc887f23d3",
   "_spec": "dohdec@2.0.0",
-  "_where": "/Users/user/Projects/OpenSource/Metahash/metahash-js",
+  "_where": "/Users/boston/Projects/OpenSource/Metahash/metahash-js",
   "author": {
     "name": "Joe Hildebrand",
     "email": "joe-github@cursive.net"
@@ -16025,8 +16034,7 @@ elliptic.eddsa = require('./elliptic/eddsa');
 'use strict';
 
 var BN = require('bn.js');
-var elliptic = require('../../elliptic');
-var utils = elliptic.utils;
+var utils = require('../utils');
 var getNAF = utils.getNAF;
 var getJSF = utils.getJSF;
 var assert = utils.assert;
@@ -16398,16 +16406,15 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":64,"bn.js":16}],66:[function(require,module,exports){
+},{"../utils":78,"bn.js":16}],66:[function(require,module,exports){
 'use strict';
 
-var curve = require('../curve');
-var elliptic = require('../../elliptic');
+var utils = require('../utils');
 var BN = require('bn.js');
 var inherits = require('inherits');
-var Base = curve.base;
+var Base = require('./base');
 
-var assert = elliptic.utils.assert;
+var assert = utils.assert;
 
 function EdwardsCurve(conf) {
   // NOTE: Important as we are creating point in Base.call()
@@ -16833,7 +16840,7 @@ Point.prototype.eqXToP = function eqXToP(x) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":64,"../curve":67,"bn.js":16,"inherits":94}],67:[function(require,module,exports){
+},{"../utils":78,"./base":65,"bn.js":16,"inherits":94}],67:[function(require,module,exports){
 'use strict';
 
 var curve = exports;
@@ -16846,13 +16853,11 @@ curve.edwards = require('./edwards');
 },{"./base":65,"./edwards":66,"./mont":68,"./short":69}],68:[function(require,module,exports){
 'use strict';
 
-var curve = require('../curve');
 var BN = require('bn.js');
 var inherits = require('inherits');
-var Base = curve.base;
+var Base = require('./base');
 
-var elliptic = require('../../elliptic');
-var utils = elliptic.utils;
+var utils = require('../utils');
 
 function MontCurve(conf) {
   Base.call(this, 'mont', conf);
@@ -17025,16 +17030,15 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":64,"../curve":67,"bn.js":16,"inherits":94}],69:[function(require,module,exports){
+},{"../utils":78,"./base":65,"bn.js":16,"inherits":94}],69:[function(require,module,exports){
 'use strict';
 
-var curve = require('../curve');
-var elliptic = require('../../elliptic');
+var utils = require('../utils');
 var BN = require('bn.js');
 var inherits = require('inherits');
-var Base = curve.base;
+var Base = require('./base');
 
-var assert = elliptic.utils.assert;
+var assert = utils.assert;
 
 function ShortCurve(conf) {
   Base.call(this, 'short', conf);
@@ -17964,23 +17968,24 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":64,"../curve":67,"bn.js":16,"inherits":94}],70:[function(require,module,exports){
+},{"../utils":78,"./base":65,"bn.js":16,"inherits":94}],70:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
 
 var hash = require('hash.js');
-var elliptic = require('../elliptic');
+var curve = require('./curve');
+var utils = require('./utils');
 
-var assert = elliptic.utils.assert;
+var assert = utils.assert;
 
 function PresetCurve(options) {
   if (options.type === 'short')
-    this.curve = new elliptic.curve.short(options);
+    this.curve = new curve.short(options);
   else if (options.type === 'edwards')
-    this.curve = new elliptic.curve.edwards(options);
+    this.curve = new curve.edwards(options);
   else
-    this.curve = new elliptic.curve.mont(options);
+    this.curve = new curve.mont(options);
   this.g = this.curve.g;
   this.n = this.curve.n;
   this.hash = options.hash;
@@ -18171,13 +18176,14 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":64,"./precomputed/secp256k1":77,"hash.js":80}],71:[function(require,module,exports){
+},{"./curve":67,"./precomputed/secp256k1":77,"./utils":78,"hash.js":80}],71:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
 var HmacDRBG = require('hmac-drbg');
-var elliptic = require('../../elliptic');
-var utils = elliptic.utils;
+var utils = require('../utils');
+var curves = require('../curves');
+var rand = require('brorand');
 var assert = utils.assert;
 
 var KeyPair = require('./key');
@@ -18189,13 +18195,13 @@ function EC(options) {
 
   // Shortcut `elliptic.ec(curve-name)`
   if (typeof options === 'string') {
-    assert(elliptic.curves.hasOwnProperty(options), 'Unknown curve ' + options);
+    assert(curves.hasOwnProperty(options), 'Unknown curve ' + options);
 
-    options = elliptic.curves[options];
+    options = curves[options];
   }
 
   // Shortcut for `elliptic.ec(elliptic.curves.curveName)`
-  if (options instanceof elliptic.curves.PresetCurve)
+  if (options instanceof curves.PresetCurve)
     options = { curve: options };
 
   this.curve = options.curve.curve;
@@ -18233,7 +18239,7 @@ EC.prototype.genKeyPair = function genKeyPair(options) {
     hash: this.hash,
     pers: options.pers,
     persEnc: options.persEnc || 'utf8',
-    entropy: options.entropy || elliptic.rand(this.hash.hmacStrength),
+    entropy: options.entropy || rand(this.hash.hmacStrength),
     entropyEnc: options.entropy && options.entropyEnc || 'utf8',
     nonce: this.n.toArray()
   });
@@ -18413,12 +18419,11 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":64,"./key":72,"./signature":73,"bn.js":16,"hmac-drbg":92}],72:[function(require,module,exports){
+},{"../curves":70,"../utils":78,"./key":72,"./signature":73,"bn.js":16,"brorand":17,"hmac-drbg":92}],72:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
-var elliptic = require('../../elliptic');
-var utils = elliptic.utils;
+var utils = require('../utils');
 var assert = utils.assert;
 
 function KeyPair(ec, options) {
@@ -18534,13 +18539,12 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"../../elliptic":64,"bn.js":16}],73:[function(require,module,exports){
+},{"../utils":78,"bn.js":16}],73:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
 
-var elliptic = require('../../elliptic');
-var utils = elliptic.utils;
+var utils = require('../utils');
 var assert = utils.assert;
 
 function Signature(options, enc) {
@@ -18671,12 +18675,12 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":64,"bn.js":16}],74:[function(require,module,exports){
+},{"../utils":78,"bn.js":16}],74:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
-var elliptic = require('../../elliptic');
-var utils = elliptic.utils;
+var curves = require('../curves');
+var utils = require('../utils');
 var assert = utils.assert;
 var parseBytes = utils.parseBytes;
 var KeyPair = require('./key');
@@ -18688,7 +18692,7 @@ function EDDSA(curve) {
   if (!(this instanceof EDDSA))
     return new EDDSA(curve);
 
-  var curve = elliptic.curves[curve].curve;
+  var curve = curves[curve].curve;
   this.curve = curve;
   this.g = curve.g;
   this.g.precompute(curve.n.bitLength() + 1);
@@ -18791,11 +18795,10 @@ EDDSA.prototype.isPoint = function isPoint(val) {
   return val instanceof this.pointClass;
 };
 
-},{"../../elliptic":64,"./key":75,"./signature":76,"hash.js":80}],75:[function(require,module,exports){
+},{"../curves":70,"../utils":78,"./key":75,"./signature":76,"hash.js":80}],75:[function(require,module,exports){
 'use strict';
 
-var elliptic = require('../../elliptic');
-var utils = elliptic.utils;
+var utils = require('../utils');
 var assert = utils.assert;
 var parseBytes = utils.parseBytes;
 var cachedProperty = utils.cachedProperty;
@@ -18889,12 +18892,11 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":64}],76:[function(require,module,exports){
+},{"../utils":78}],76:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
-var elliptic = require('../../elliptic');
-var utils = elliptic.utils;
+var utils = require('../utils');
 var assert = utils.assert;
 var cachedProperty = utils.cachedProperty;
 var parseBytes = utils.parseBytes;
@@ -18957,7 +18959,7 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":64,"bn.js":16}],77:[function(require,module,exports){
+},{"../utils":78,"bn.js":16}],77:[function(require,module,exports){
 module.exports = {
   doubles: {
     step: 4,
@@ -19863,21 +19865,21 @@ utils.intFromLE = intFromLE;
 
 },{"bn.js":16,"minimalistic-assert":99,"minimalistic-crypto-utils":100}],79:[function(require,module,exports){
 module.exports={
-  "_from": "elliptic@6.4.1",
-  "_id": "elliptic@6.4.1",
+  "_from": "elliptic@6.5.0",
+  "_id": "elliptic@6.5.0",
   "_inBundle": false,
-  "_integrity": "sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==",
+  "_integrity": "sha512-eFOJTMyCYb7xtE/caJ6JJu+bhi67WCYNbkGSknu20pmM8Ke/bqOfdnZWxyoGN26JgfxTbXrsCkEw4KheCT/KGg==",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
     "type": "version",
     "registry": true,
-    "raw": "elliptic@6.4.1",
+    "raw": "elliptic@6.5.0",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "6.4.1",
+    "rawSpec": "6.5.0",
     "saveSpec": null,
-    "fetchSpec": "6.4.1"
+    "fetchSpec": "6.5.0"
   },
   "_requiredBy": [
     "/",
@@ -19885,10 +19887,10 @@ module.exports={
     "/create-ecdh",
     "/key-encoder"
   ],
-  "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz",
-  "_shasum": "c2d0b7776911b86722c632c3c06c60f2f819939a",
-  "_spec": "elliptic@6.4.1",
-  "_where": "/Users/user/Projects/OpenSource/Metahash/metahash-js",
+  "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.5.0.tgz",
+  "_shasum": "2b8ed4c891b7de3200e14412a5b8248c7af505ca",
+  "_spec": "elliptic@6.5.0",
+  "_where": "/Users/boston/Projects/OpenSource/Metahash/metahash-js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -19949,7 +19951,7 @@ module.exports={
     "unit": "istanbul test _mocha --reporter=spec test/index.js",
     "version": "grunt dist && git add dist/"
   },
-  "version": "6.4.1"
+  "version": "6.5.0"
 }
 
 },{}],80:[function(require,module,exports){
@@ -21833,174 +21835,175 @@ ip.fromLong = function(ipl) {
 };
 
 },{"buffer":19,"os":102}],96:[function(require,module,exports){
-'use strict'
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const key_encoder_1 = __importDefault(require("./key-encoder"));
+exports.default = key_encoder_1.default;
 
-module.exports = require('./lib/key-encoder')
-},{"./lib/key-encoder":97}],97:[function(require,module,exports){
+},{"./key-encoder":97}],97:[function(require,module,exports){
 (function (Buffer){
-'use strict'
-
-var asn1 = require('asn1.js'),
-    BN = require('bn.js'),
-    EC = require('elliptic').ec
-
-var ECPrivateKeyASN = asn1.define('ECPrivateKey', function() {
-    this.seq().obj(
-        this.key('version').int(),
-        this.key('privateKey').octstr(),
-        this.key('parameters').explicit(0).objid().optional(),
-        this.key('publicKey').explicit(1).bitstr().optional()
-    )
-})
-
-var SubjectPublicKeyInfoASN = asn1.define('SubjectPublicKeyInfo', function() {
-    this.seq().obj(
-        this.key('algorithm').seq().obj(
-            this.key("id").objid(),
-            this.key("curve").objid()
-        ),
-        this.key('pub').bitstr()
-    )
-})
-
-var curves = {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const bn_js_1 = __importDefault(require("bn.js"));
+const elliptic_1 = require("elliptic");
+// @ts-ignore
+const asn1_js_1 = __importDefault(require("asn1.js"));
+const ECPrivateKeyASN = asn1_js_1.default.define('ECPrivateKey', function () {
+    // @ts-ignore
+    const self = this;
+    self.seq().obj(self.key('version').int(), self.key('privateKey').octstr(), self.key('parameters').explicit(0).objid().optional(), self.key('publicKey').explicit(1).bitstr().optional());
+});
+const SubjectPublicKeyInfoASN = asn1_js_1.default.define('SubjectPublicKeyInfo', function () {
+    // @ts-ignore
+    const self = this;
+    self.seq().obj(self.key('algorithm').seq().obj(self.key("id").objid(), self.key("curve").objid()), self.key('pub').bitstr());
+});
+const curves = {
     secp256k1: {
         curveParameters: [1, 3, 132, 0, 10],
-        privatePEMOptions: {label: 'EC PRIVATE KEY'},
-        publicPEMOptions: {label: 'PUBLIC KEY'},
-        curve: new EC('secp256k1')
+        privatePEMOptions: { label: 'EC PRIVATE KEY' },
+        publicPEMOptions: { label: 'PUBLIC KEY' },
+        curve: new elliptic_1.ec('secp256k1')
+    }
+};
+class KeyEncoder {
+    constructor(options) {
+        if (typeof options === 'string') {
+            if (options !== 'secp256k1') {
+                throw new Error('Unknown curve ' + options);
+            }
+            options = curves[options];
+        }
+        this.options = options;
+        this.algorithmID = [1, 2, 840, 10045, 2, 1];
+    }
+    privateKeyObject(rawPrivateKey, rawPublicKey) {
+        const privateKeyObject = {
+            version: new bn_js_1.default(1),
+            privateKey: Buffer.from(rawPrivateKey, 'hex'),
+            parameters: this.options.curveParameters
+        };
+        if (rawPublicKey) {
+            privateKeyObject.publicKey = {
+                unused: 0,
+                data: Buffer.from(rawPublicKey, 'hex')
+            };
+        }
+        return privateKeyObject;
+    }
+    publicKeyObject(rawPublicKey) {
+        return {
+            algorithm: {
+                id: this.algorithmID,
+                curve: this.options.curveParameters
+            },
+            pub: {
+                unused: 0,
+                data: Buffer.from(rawPublicKey, 'hex')
+            }
+        };
+    }
+    encodePrivate(privateKey, originalFormat, destinationFormat) {
+        let privateKeyObject;
+        /* Parse the incoming private key and convert it to a private key object */
+        if (originalFormat === 'raw') {
+            if (typeof privateKey !== 'string') {
+                throw 'private key must be a string';
+            }
+            let keyPair = this.options.curve.keyFromPrivate(privateKey, 'hex');
+            let rawPublicKey = keyPair.getPublic('hex');
+            privateKeyObject = this.privateKeyObject(privateKey, rawPublicKey);
+        }
+        else if (originalFormat === 'der') {
+            if (typeof privateKey !== 'string') {
+                // do nothing
+            }
+            else if (typeof privateKey === 'string') {
+                privateKey = Buffer.from(privateKey, 'hex');
+            }
+            else {
+                throw 'private key must be a buffer or a string';
+            }
+            privateKeyObject = ECPrivateKeyASN.decode(privateKey, 'der');
+        }
+        else if (originalFormat === 'pem') {
+            if (typeof privateKey !== 'string') {
+                throw 'private key must be a string';
+            }
+            privateKeyObject = ECPrivateKeyASN.decode(privateKey, 'pem', this.options.privatePEMOptions);
+        }
+        else {
+            throw 'invalid private key format';
+        }
+        /* Export the private key object to the desired format */
+        if (destinationFormat === 'raw') {
+            return privateKeyObject.privateKey.toString('hex');
+        }
+        else if (destinationFormat === 'der') {
+            return ECPrivateKeyASN.encode(privateKeyObject, 'der').toString('hex');
+        }
+        else if (destinationFormat === 'pem') {
+            return ECPrivateKeyASN.encode(privateKeyObject, 'pem', this.options.privatePEMOptions);
+        }
+        else {
+            throw 'invalid destination format for private key';
+        }
+    }
+    encodePublic(publicKey, originalFormat, destinationFormat) {
+        let publicKeyObject;
+        /* Parse the incoming public key and convert it to a public key object */
+        if (originalFormat === 'raw') {
+            if (typeof publicKey !== 'string') {
+                throw 'public key must be a string';
+            }
+            publicKeyObject = this.publicKeyObject(publicKey);
+        }
+        else if (originalFormat === 'der') {
+            if (typeof publicKey !== 'string') {
+                // do nothing
+            }
+            else if (typeof publicKey === 'string') {
+                publicKey = Buffer.from(publicKey, 'hex');
+            }
+            else {
+                throw 'public key must be a buffer or a string';
+            }
+            publicKeyObject = SubjectPublicKeyInfoASN.decode(publicKey, 'der');
+        }
+        else if (originalFormat === 'pem') {
+            if (typeof publicKey !== 'string') {
+                throw 'public key must be a string';
+            }
+            publicKeyObject = SubjectPublicKeyInfoASN.decode(publicKey, 'pem', this.options.publicPEMOptions);
+        }
+        else {
+            throw 'invalid public key format';
+        }
+        /* Export the private key object to the desired format */
+        if (destinationFormat === 'raw') {
+            return publicKeyObject.pub.data.toString('hex');
+        }
+        else if (destinationFormat === 'der') {
+            return SubjectPublicKeyInfoASN.encode(publicKeyObject, 'der').toString('hex');
+        }
+        else if (destinationFormat === 'pem') {
+            return SubjectPublicKeyInfoASN.encode(publicKeyObject, 'pem', this.options.publicPEMOptions);
+        }
+        else {
+            throw 'invalid destination format for public key';
+        }
     }
 }
+KeyEncoder.ECPrivateKeyASN = ECPrivateKeyASN;
+KeyEncoder.SubjectPublicKeyInfoASN = SubjectPublicKeyInfoASN;
+exports.default = KeyEncoder;
 
-function assert(val, msg) {
-    if (!val) {
-        throw new Error(msg || 'Assertion failed')
-    }
-}
-
-function KeyEncoder(options) {
-    if (typeof options === 'string') {
-        assert(curves.hasOwnProperty(options), 'Unknown curve ' + options)
-        options = curves[options]
-    }
-    this.options = options
-    this.algorithmID = [1, 2, 840, 10045, 2, 1]
-}
-
-KeyEncoder.ECPrivateKeyASN = ECPrivateKeyASN
-KeyEncoder.SubjectPublicKeyInfoASN = SubjectPublicKeyInfoASN
-
-KeyEncoder.prototype.privateKeyObject = function(rawPrivateKey, rawPublicKey) {
-    var privateKeyObject = {
-        version: new BN(1),
-        privateKey: new Buffer(rawPrivateKey, 'hex'),
-        parameters: this.options.curveParameters
-    }
-
-    if (rawPublicKey) {
-        privateKeyObject.publicKey = {
-            unused: 0,
-            data: new Buffer(rawPublicKey, 'hex')
-        }
-    }
-
-    return privateKeyObject
-}
-
-KeyEncoder.prototype.publicKeyObject = function(rawPublicKey) {
-    return {
-        algorithm: {
-            id: this.algorithmID,
-            curve: this.options.curveParameters
-        },
-        pub: {
-            unused: 0,
-            data: new Buffer(rawPublicKey, 'hex')
-        }
-    }
-}
-
-KeyEncoder.prototype.encodePrivate = function(privateKey, originalFormat, destinationFormat) {
-    var privateKeyObject
-
-    /* Parse the incoming private key and convert it to a private key object */
-    if (originalFormat === 'raw') {
-        if (!typeof privateKey === 'string') {
-            throw 'private key must be a string'
-        }
-        var privateKeyObject = this.options.curve.keyFromPrivate(privateKey, 'hex'),
-            rawPublicKey = privateKeyObject.getPublic('hex')
-        privateKeyObject = this.privateKeyObject(privateKey, rawPublicKey)
-    } else if (originalFormat === 'der') {
-        if (typeof privateKey === 'buffer') {
-            // do nothing
-        } else if (typeof privateKey === 'string') {
-            privateKey = new Buffer(privateKey, 'hex')
-        } else {
-            throw 'private key must be a buffer or a string'
-        }
-        privateKeyObject = ECPrivateKeyASN.decode(privateKey, 'der')
-    } else if (originalFormat === 'pem') {
-        if (!typeof privateKey === 'string') {
-            throw 'private key must be a string'
-        }
-        privateKeyObject = ECPrivateKeyASN.decode(privateKey, 'pem', this.options.privatePEMOptions)
-    } else {
-        throw 'invalid private key format'
-    }
-
-    /* Export the private key object to the desired format */
-    if (destinationFormat === 'raw') {
-        return privateKeyObject.privateKey.toString('hex')
-    } else if (destinationFormat === 'der') {
-        return ECPrivateKeyASN.encode(privateKeyObject, 'der').toString('hex')
-    } else if (destinationFormat === 'pem') {
-        return ECPrivateKeyASN.encode(privateKeyObject, 'pem', this.options.privatePEMOptions)
-    } else {
-        throw 'invalid destination format for private key'
-    }
-}
-
-KeyEncoder.prototype.encodePublic = function(publicKey, originalFormat, destinationFormat) {
-    var publicKeyObject
-
-    /* Parse the incoming public key and convert it to a public key object */
-    if (originalFormat === 'raw') {
-        if (!typeof publicKey === 'string') {
-            throw 'public key must be a string'
-        }
-        publicKeyObject = this.publicKeyObject(publicKey)
-    } else if (originalFormat === 'der') {
-        if (typeof publicKey === 'buffer') {
-            // do nothing
-        } else if (typeof publicKey === 'string') {
-            publicKey = new Buffer(publicKey, 'hex')
-        } else {
-            throw 'public key must be a buffer or a string'
-        }
-        publicKeyObject = SubjectPublicKeyInfoASN.decode(publicKey, 'der')
-    } else if (originalFormat === 'pem') {
-        if (!typeof publicKey === 'string') {
-            throw 'public key must be a string'
-        }
-        publicKeyObject = SubjectPublicKeyInfoASN.decode(publicKey, 'pem', this.options.publicPEMOptions)
-    } else {
-        throw 'invalid public key format'
-    }
-
-    /* Export the private key object to the desired format */
-    if (destinationFormat === 'raw') {
-        return publicKeyObject.pub.data.toString('hex')
-    } else if (destinationFormat === 'der') {
-        return SubjectPublicKeyInfoASN.encode(publicKeyObject, 'der').toString('hex')
-    } else if (destinationFormat === 'pem') {
-        return SubjectPublicKeyInfoASN.encode(publicKeyObject, 'pem', this.options.publicPEMOptions)
-    } else {
-        throw 'invalid destination format for public key'
-    }
-}
-
-module.exports = KeyEncoder
 }).call(this,require("buffer").Buffer)
 },{"asn1.js":1,"bn.js":16,"buffer":19,"elliptic":64}],98:[function(require,module,exports){
 'use strict';
