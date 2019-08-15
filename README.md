@@ -1,10 +1,10 @@
-# MetaHash JS API
+# MetaHash JS SDK
 
 ## Usage
 
 ### Node.js (not published for now)
 ```javascript
-const MetaHash = require('metahash-client');
+const MetaHash = require('metahash-js');
 ```
 
 ### Browser
