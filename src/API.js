@@ -70,10 +70,17 @@ class API {
     }
 
     fetchHistory({address, beginTx, countTxs}) {
-        const params = {address};
+        const params = {address, filters};
         if (typeof beginTx !== 'undefined') { params.beginTx = beginTx; }
         if (typeof countTxs !== 'undefined') { params.countTxs = countTxs; }
         return this.request('fetch-history', params);
+    }
+
+    fetchHistoryFilter({address, filters, beginTx, countTxs}) {
+        const params = {address};
+        if (typeof beginTx !== 'undefined') { params.beginTx = beginTx; }
+        if (typeof countTxs !== 'undefined') { params.countTxs = countTxs; }
+        return this.request('fetch-history-filter', params);
     }
 
     getAddressDelegations({address, beginTx, countTxs}) {
