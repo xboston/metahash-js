@@ -1,5 +1,7 @@
 # MetaHash JS SDK
 
+Taken from https://github.com/metahashorg/MetaWallet-interface
+
 ## Usage
 
 ### Node.js (not published for now)
