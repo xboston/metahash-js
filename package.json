@@ -1,6 +1,6 @@
 {
   "name": "metahash-js",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "JS SDK for MetaHash Blockchain",
   "module": "src/index",
   "main": "src/index.js",
