@@ -29,8 +29,8 @@ const secp256r1EncoderOptions = {
 };
 
 const keyEncoders = {
-    'secp256k1': new KeyEncoder(secp256k1EncoderOptions),
-    'secp256r1': new KeyEncoder(secp256r1EncoderOptions)
+    'secp256k1': new KeyEncoder.default(secp256k1EncoderOptions),
+    'secp256r1': new KeyEncoder.default(secp256r1EncoderOptions)
 };
 
 function binToHex(value) {
