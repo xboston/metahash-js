@@ -1,17 +1,15 @@
 # MetaHash JS SDK
 
-Taken from https://github.com/metahashorg/MetaWallet-interface
-
 ## Usage
 
-### Node.js
+### NodeJS
 ```javascript
 const MetaHash = require('metahash-js');
 ```
 
 ### Browser
 ```html
-<script src="dist/MetaHash.js"></script>
+<script src="dist/metahash.js"></script>
 ```
 
 ### Create new wallet
