@@ -4,7 +4,7 @@ Taken from https://github.com/metahashorg/MetaWallet-interface
 
 ## Usage
 
-### Node.js (not published for now)
+### Node.js
 ```javascript
 const MetaHash = require('metahash-js');
 ```
