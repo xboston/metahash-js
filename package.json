@@ -4,8 +4,8 @@
   "description": "JS SDK for MetaHash Blockchain",
   "module": "src/index",
   "main": "src/index.js",
-  "unpkg": "dist/index.min.js",
-  "browser": "dist/index.min.js",
+  "unpkg": "dist/metahash.min.js",
+  "browser": "dist/metahash.min.js",
   "files": [
     "/src/",
     "/dist/"
