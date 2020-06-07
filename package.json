@@ -1,6 +1,6 @@
 {
   "name": "metahash-js",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "JS SDK for MetaHash Blockchain",
   "module": "src/index",
   "main": "src/index.js",
@@ -25,21 +25,23 @@
     "url": "https://github.com/xboston/metahash-js/issues"
   },
   "dependencies": {
-    "crypto-js": "3.1.9-1",
-    "dohdec": "2.0.0",
-    "elliptic": "6.5.0",
-    "key-encoder": "2.0.2",
-    "locutus": "2.0.11",
-    "node-fetch": "2.6.0",
-    "extend": "^2.0.2"
+    "crypto-js": "^4.0.0",
+    "dohdec": "^2.1.0",
+    "elliptic": "^6.5.2",
+    "key-encoder": "^2.0.3",
+    "locutus": "^2.0.11",
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "browserify": "16.5.0",
-    "tinyify": "2.5.1"
+    "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^8.0.1",
+    "rollup": "^2.14.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.4.0",
+    "rollup-plugin-terser": "^6.1.0"
   },
   "scripts": {
-    "build": "browserify --standalone MetaHash src/index.js > dist/metahash.js",
-    "build:min": "browserify -p tinyify --standalone MetaHash src/index.js > dist/metahash.min.js",
-    "build:full": "npm run build && npm run build:min"
+    "build": "rollup -c"
   }
 }

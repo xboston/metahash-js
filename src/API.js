@@ -70,7 +70,7 @@ class API {
     }
 
     fetchHistory({address, beginTx, countTxs}) {
-        const params = {address, filters};
+        const params = {address};
         if (typeof beginTx !== 'undefined') { params.beginTx = beginTx; }
         if (typeof countTxs !== 'undefined') { params.countTxs = countTxs; }
         return this.request('fetch-history', params);

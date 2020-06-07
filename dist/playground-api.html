@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>MetaHash.API playground</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="https://playground.metahash.dev/media/bootstrap.min.css">
+	<link rel="stylesheet" href="https://playground.metahash.dev/media/main.css">
+	<link rel="shortcut icon" href="https://playground.metahash.dev/media/favicon.ico" type="image/x-icon" />
+	<script src="/metahash.js"></script>
+</head>
+
+<body>
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-dark">
+			<div class="container">
+				<span class="navbar-brand">
+					<a href="/">
+						<img src="https://playground.metahash.dev/media/logo.svg" class="d-inline-block align-top" alt="MetaHash">
+					</a>
+					<a href="playground.html">
+						| js-<span>crypto</span>
+					</a>
+					<a href="playground-api.html">
+						| js-<span>api</span>
+					</a>
+				</span>
+			</div>
+		</nav>
+	</header>
+	<section class="content">
+		<main role="main" class="container">
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="createandsend">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">Create and send transaction</h5>
+											<br>
+											<div class="form-group">
+												<label>privateKey:</label>
+												<textarea class="form-control fromPrivateKey" name="fromPrivateKey"
+													rows="3" required></textarea>
+												<label>To:</label>
+												<input type="text" value="" class="form-control to" name="to" required>
+												<label>Value ( <code>1 = 0.000001 MHC</code> ):</label>
+												<input type="number" min="0.000001" value="" class="form-control value"
+													name="value" required>
+												<label>Fee:</label>
+												<input type="number" value="0" class="form-control fee" name="fee">
+												<label>Data ( <code>0[xX][0-9a-fA-F]+</code> ? ):</label>
+												<input type="text" value="" class="form-control data" name="data">
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">Create and send</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">result:</label>
+												<textarea class="form-control result" name="result" rows="4"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="getNodes">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">getNodes</h5>
+											<div class="form-group">
+												<select value="main" class="form-control network" name="network">
+													<option value="main">main</option>
+													<option value="test">test</option>
+													<option value="dev">dev</option>
+												</select>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">Get</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">nodes:</label>
+												<textarea class="form-control nodes" name="nodes" rows="7"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="fetchBalance">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">fetchBalance</h5>
+											<div class="form-group">
+												<input type="text"
+													value="0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833"
+													class="form-control address" name="address" required>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">Get</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">result:</label>
+												<textarea class="form-control log" name="log" rows="7"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="fetchBalances">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">fetchBalances</h5>
+											<div class="form-group">
+												<input type="text"
+													value="0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833"
+													class="form-control address1" name="address" required>
+												<br />
+												<input type="text"
+													value="0x00e723cea0f0b0f75dd94b3513dee144144669ffcbd07db936"
+													class="form-control address2" name="address" required>
+												<br />
+												<input type="text"
+													value="0x007e7e20fa2c5225431e3c0ec4af95e802d75d89a58d8b229b"
+													class="form-control address3" name="address" required>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">Get</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">result:</label>
+												<textarea class="form-control log" name="log" rows="7"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="fetchHistory">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">fetchHistory</h5>
+											<div class="form-group">
+												<label>address:</label>
+												<input type="text"
+													value="0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833"
+													class="form-control address" name="address" required>
+												<label>beginTx:</label>
+												<input type="number" min="0" value="0" class="form-control beginTx"
+													name="beginTx">
+												<label>countTxs:</label>
+												<input type="number" value="10" min="1" max="9999"
+													class="form-control countTxs" name="countTxs">
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">Get</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">result:</label>
+												<textarea class="form-control log" name="log" rows="7"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="getAddressDelegations">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">getAddressDelegations</h5>
+											<div class="form-group">
+												<label>address:</label>
+												<input type="text"
+													value="0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833"
+													class="form-control address" name="address" required>
+												<label>beginTx:</label>
+												<input type="number" min="0" value="0" class="form-control beginTx"
+													name="beginTx">
+												<label>countTxs:</label>
+												<input type="number" max="9999" value="10" class="form-control countTxs"
+													name="countTxs">
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">Get</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">result:</label>
+												<textarea class="form-control log" name="log" rows="7"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="getTx">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">getTx</h5>
+											<div class="form-group">
+												<input type="text"
+													value="068d127d4d0eb76accf403b2900e291d4a9e61fdf25447bbb6c68b2e4efe3f9c"
+													class="form-control tx" name="tx" required>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">Get</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">result:</label>
+												<textarea class="form-control log" name="log" rows="7"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<hr />
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="getNonce">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">getNonce</h5>
+											<div class="form-group">
+												<input type="text"
+													value="0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833"
+													class="form-control address" name="address" required>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">Get</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">result:</label>
+												<input class="form-control log" name="log" type="number" readonly />
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</main>
+	</section>
+	<br>
+	<footer class="footer">
+		<div class="container-fluid">
+			<span class="text-muted"><a href="https://metahash.dev" target="_blank">MetaHash.DEV</a></span>
+		</div>
+	</footer>
+	<script>
+		const camelCase = (str) => {
+			str = str.replace(/[=\[\]"]/g, ' ').replace(/  +/g, ' ').replace(/[#\.]/g, '');
+			str = str.replace(/-([a-z])/g, (_m, l) => {
+				return l.toUpperCase();
+			});
+			return str.replace(/ ([a-z])/g, (_m, l) => {
+				return l.toUpperCase();
+			});
+		}
+
+		const initHtmlElements = ($htmlElements) => {
+			for (let name in $htmlElements) {
+				let nameConst = $htmlElements[name];
+				nameConst = camelCase(nameConst);
+				eval(`window.$${nameConst} = document.querySelector('${$htmlElements[name]}');`);
+			}
+		};
+
+		initHtmlElements(
+			[
+				'#createandsend', '#createandsend .fromPrivateKey', '#createandsend .to', '#createandsend .value',
+				'#createandsend .fee', '#createandsend .data', '#createandsend .result',
+				'#getNodes', '#getNodes .nodes', '#getNodes .network',
+				'#fetchBalance', '#fetchBalance .address', '#fetchBalance .log',
+				'#fetchBalances', '#fetchBalances .address1', '#fetchBalances .address2', '#fetchBalances .address3',
+				'#fetchBalances .log',
+				'#fetchHistory', '#fetchHistory .address', '#fetchHistory .log', '#fetchHistory .countTxs', '#fetchHistory .beginTx',
+				'#getAddressDelegations', '#getAddressDelegations .address', '#getAddressDelegations .log',
+				'#getAddressDelegations .countTxs', '#getAddressDelegations .beginTx',
+				'#getNonce', '#getNonce .address', '#getNonce .log',
+				'#getTx', '#getTx .tx', '#getTx .log',
+			]
+		);
+
+		$createandsend.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const API = MetaHash.API;
+			const Wallet = MetaHash.Wallet;
+
+			const wallet = Wallet.fromPrivateKey($createandsendFromPrivateKey.value);
+			const api = new API('https://proxy.metahash.dev', 'https://tor.metahash.dev');
+
+			api.getNonce({
+				address: wallet.address
+			}).then((nonce) => {
+				const to = $createandsendTo.value;
+				const value = $createandsendValue.value;
+				const fee = $createandsendFee.value;
+				const data = $createandsendData.value;
+
+				const tx = wallet.createTx({
+					to,
+					value,
+					fee,
+					nonce,
+					data
+				});
+
+				api.sendTx(tx).then((result) => {
+					$createandsendResult.value = JSON.stringify(result, null, 4);
+				});
+			});
+		});
+
+		$getNodes.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const API = MetaHash.API;
+			API.getNodes($getNodesNetwork.value).then((nodes) => {
+				$getNodesNodes.value = JSON.stringify(nodes, null, 4);
+			});
+		});
+
+		$fetchBalance.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const API = MetaHash.API;
+			const api = new API('https://proxy.metahash.dev', 'https://tor.metahash.dev');
+
+			api.fetchBalance({
+				address: $fetchBalanceAddress.value
+			}).then((result) => {
+				$fetchBalanceLog.value = JSON.stringify(result, null, 4);
+			});
+		});
+
+		$fetchBalances.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const API = MetaHash.API;
+			const api = new API('https://proxy.metahash.dev', 'https://tor.metahash.dev');
+
+			api.fetchBalances({
+				addresses: [$fetchBalancesAddress1.value, $fetchBalancesAddress2.value, $fetchBalancesAddress3
+					.value
+				]
+			}).then((result) => {
+				$fetchBalancesLog.value = JSON.stringify(result, null, 4);
+			});
+		});
+
+		$fetchHistory.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const API = MetaHash.API;
+			const api = new API('https://proxy.metahash.dev', 'https://tor.metahash.dev');
+
+			api.fetchHistory({
+				address: $fetchHistoryAddress.value,
+				beginTx: parseInt($fetchHistoryBeginTx.value, 10),
+				countTxs: parseInt($fetchHistoryCountTxs.value, 10),
+			}).then((result) => {
+				$fetchHistoryLog.value = JSON.stringify(result, null, 4);
+			});
+		});
+
+		$getAddressDelegations.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const API = MetaHash.API;
+			const api = new API('https://proxy.metahash.dev', 'https://tor.metahash.dev');
+
+			api.getAddressDelegations({
+				address: $getAddressDelegationsAddress.value,
+				beginTx: parseInt($getAddressDelegationsBeginTx.value, 10),
+				countTxs: parseInt($getAddressDelegationsCountTxs.value, 10),
+			}).then((result) => {
+				$getAddressDelegationsLog.value = JSON.stringify(result, null, 4);
+			});
+		});
+
+		$getTx.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const API = MetaHash.API;
+			const api = new API('https://proxy.metahash.dev', 'https://tor.metahash.dev');
+
+			api.getTx({
+				hash: $getTxTx.value
+			}).then((result) => {
+				$getTxLog.value = JSON.stringify(result, null, 4);
+			});
+		});
+
+		$getNonce.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const API = MetaHash.API;
+			const api = new API('https://proxy.metahash.dev', 'https://tor.metahash.dev');
+
+			api.getNonce({
+				address: $getNonceAddress.value
+			}).then((result) => {
+				$getNonceLog.value = JSON.stringify(result, null, 4);
+			});
+		});
+	</script>
+</body>
+
+</html>

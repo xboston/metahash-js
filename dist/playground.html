@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>MetaHash.JS playground</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="https://playground.metahash.dev/media/bootstrap.min.css">
+	<link rel="stylesheet" href="https://playground.metahash.dev/media/main.css">
+	<link rel="shortcut icon" href="https://playground.metahash.dev/media/favicon.ico" type="image/x-icon" />
+	<script src="/metahash.js"></script>
+</head>
+
+<body>
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-dark">
+			<div class="container">
+				<span class="navbar-brand">
+					<a href="/">
+						<img src="https://playground.metahash.dev/media/logo.svg" class="d-inline-block align-top" alt="MetaHash">
+					</a>
+					<a href="playground.html">
+						| js-<span>crypto</span>
+					</a>
+					<a href="playground-api.html">
+						| js-<span>api</span>
+					</a>
+				</span>
+			</div>
+		</nav>
+	</header>
+	<section class="content">
+		<main role="main" class="container">
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="generate">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">Create new wallet</h5>
+											<br>
+											<div class="form-group">
+												<button class="btn btn-success secp256k1"
+													type="button">secp256k1</button>
+												<button class="btn btn-success secp256r1"
+													type="button">secp256r1</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">privateKey:</label>
+												<textarea class="form-control privateKey" name="log" rows="3"
+													readonly></textarea>
+												<label for="get-block-by-number-number">publicKey:</label>
+												<textarea class="form-control publicKey" name="log" rows="3"
+													readonly></textarea>
+												<label for="get-block-by-number-number">address:</label>
+												<textarea class="form-control address" name="log" rows="1"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="encrypted">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">PrivateKey encrypt to PEM</h5>
+											<br>
+
+											<div class="form-group"> <label
+													for="get-block-by-number-number">privateKey:</label>
+												<textarea class="form-control privateKey" name="privateKey"
+													rows="3"></textarea>
+												<label>password:</label>
+												<input type="text" value="" class="form-control password"
+													name="password" required>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">Create</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">encryptedPEM:</label>
+												<textarea class="form-control encryptedPEM" name="encryptedPEM" rows="7"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="decrypted">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">Private PEM decrypt to privateKey</h5>
+											<br>
+
+											<div class="form-group"> <label for="get-block-by-number-number">Encrypted
+													key PEM:</label>
+												<textarea class="form-control encryptedKey" name="encryptedKey" rows="7"
+													required></textarea>
+												<label>password:</label>
+												<input type="text" value="" class="form-control password"
+													name="password" required>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">Create</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">privateKey:</label>
+												<textarea class="form-control privateKey" name="log" rows="3"
+													readonly></textarea>
+												<label for="get-block-by-number-number">publicKey:</label>
+												<textarea class="form-control publicKey" name="log" rows="3"
+													readonly></textarea>
+												<label for="get-block-by-number-number">address:</label>
+												<textarea class="form-control address" name="log" rows="1"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="pemmake">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">PEM from privateKey</h5>
+											<br>
+
+											<div class="form-group"> <label
+													for="get-block-by-number-number">privateKey:</label>
+												<textarea class="form-control privateKey" name="privateKey" rows="3"
+													required></textarea>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">Create</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">pem:</label>
+												<textarea class="form-control pem" name="pem" rows="7"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="pemextract">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">PEM extract</h5>
+											<br>
+
+											<div class="form-group"> <label
+													for="get-block-by-number-number">PEM:</label>
+												<textarea class="form-control pem" name="pem" rows="7"
+													required></textarea>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">extract</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">privateKey:</label>
+												<textarea class="form-control privateKey" name="log" rows="3"
+													readonly></textarea>
+												<label for="get-block-by-number-number">publicKey:</label>
+												<textarea class="form-control publicKey" name="log" rows="3"
+													readonly></textarea>
+												<label for="get-block-by-number-number">address:</label>
+												<textarea class="form-control address" name="log" rows="1"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="restore">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">Restore wallet from private key</h5>
+											<br>
+											<div class="form-group">
+												<label>privateKey:</label>
+												<textarea class="form-control fromPrivateKey" name="fromPrivateKey"
+													rows="3" required></textarea>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">Restore</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">privateKey:</label>
+												<textarea class="form-control privateKey" name="privateKey" rows="3"
+													readonly></textarea>
+												<label for="get-block-by-number-number">publicKey:</label>
+												<textarea class="form-control publicKey" name="publicKey" rows="3"
+													readonly></textarea>
+												<label for="get-block-by-number-number">address:</label>
+												<textarea class="form-control address" name="address" rows="1"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</main>
+	</section>
+	<br>
+	<footer class="footer">
+		<div class="container-fluid">
+			<span class="text-muted"><a href="https://metahash.dev" target="_blank">MetaHash.DEV</a></span>
+		</div>
+	</footer>
+	<script>
+		const camelCase = (str) => {
+			str = str.replace(/[=\[\]"]/g, ' ').replace(/  +/g, ' ').replace(/[#\.]/g, '');
+			str = str.replace(/-([a-z])/g, (_m, l) => {
+				return l.toUpperCase();
+			});
+			return str.replace(/ ([a-z])/g, (_m, l) => {
+				return l.toUpperCase();
+			});
+		}
+
+		const initHtmlElements = ($htmlElements) => {
+			for (let name in $htmlElements) {
+				let nameConst = $htmlElements[name];
+				nameConst = camelCase(nameConst);
+				eval(`window.$${nameConst} = document.querySelector('${$htmlElements[name]}');`);
+			}
+		};
+
+		initHtmlElements(
+			[
+				'#generate', '.secp256k1', '.secp256r1', '#generate .publicKey', '#generate .privateKey',
+				'#generate .address',
+				'#restore', '#restore .fromPrivateKey', '#restore .publicKey', '#restore .privateKey',
+				'#restore .address',
+				'#encrypted', '#encrypted .privateKey', '#encrypted .password', '#encrypted .encryptedPEM',
+				'#decrypted', '#decrypted .encryptedKey', '#decrypted .password', '#decrypted .privateKey',
+				'#decrypted .publicKey', '#decrypted .address',
+				'#pemextract', '#pemextract .pem', '#pemextract .privateKey', '#pemextract .publicKey',
+				'#pemextract .address',
+				'#pemmake', '#pemmake .privateKey', '#pemmake .pem',
+			]
+		);
+
+		$secp256k1.addEventListener('click', (e) => {
+			e.preventDefault();
+			const Wallet = MetaHash.Wallet;
+			const wallet = new Wallet('secp256k1');
+			$generatePrivateKey.value = wallet.privateKey;
+			$generatePublicKey.value = wallet.publicKey;
+			$generateAddress.value = wallet.address;
+
+			$encryptedPrivateKey.value = wallet.privateKey;
+		});
+
+		$secp256r1.addEventListener('click', (e) => {
+			e.preventDefault();
+			const Wallet = MetaHash.Wallet;
+			const wallet = new Wallet('secp256r1');
+			$generatePrivateKey.value = wallet.privateKey;
+			$generatePublicKey.value = wallet.publicKey;
+			$generateAddress.value = wallet.address;
+
+			$encryptedPrivateKey.value = wallet.privateKey;
+		});
+
+		$restore.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const Wallet = MetaHash.Wallet;
+			const wallet = Wallet.fromPrivateKey($restoreFromPrivateKey.value);
+			$restorePrivateKey.value = wallet.privateKey;
+			$restorePublicKey.value = wallet.publicKey;
+			$restoreAddress.value = wallet.address;
+		});
+
+		$encrypted.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const Wallet = MetaHash.Wallet;
+			const wallet = Wallet.fromPrivateKey($encryptedPrivateKey.value);
+			$encryptedEncryptedPEM.value = wallet.toEncryptedPEM($encryptedPassword.value);
+
+			$decryptedEncryptedKey.value = $encryptedEncryptedPEM.value;
+		});
+
+		$decrypted.addEventListener('submit', (e) => {
+			e.preventDefault();
+
+			try {
+				const Wallet = MetaHash.Wallet;
+				const wallet = Wallet.fromEncryptedPEM($decryptedEncryptedKey.value, $decryptedPassword.value);
+
+				$decryptedPrivateKey.value = wallet.privateKey;
+				$decryptedPublicKey.value = wallet.publicKey;
+				$decryptedAddress.value = wallet.address;
+			} catch (e) {
+				alert(e.message);
+				return;
+			}
+		});
+
+		$pemmake.addEventListener('submit', (e) => {
+			e.preventDefault();
+
+			const Wallet = MetaHash.Wallet;
+			const wallet = Wallet.fromPrivateKey($pemmakePrivateKey.value);
+
+			$pemmakePem.value = wallet.toPEM();
+		});
+
+		$pemextract.addEventListener('submit', (e) => {
+			e.preventDefault();
+
+			const Wallet = MetaHash.Wallet;
+			const wallet = Wallet.fromPEM($pemextractPem.value);
+
+			$pemextractPrivateKey.value = wallet.privateKey;
+			$pemextractPublicKey.value = wallet.publicKey;
+			$pemextractAddress.value = wallet.address;
+		});
+	</script>
+</body>
+
+</html>
