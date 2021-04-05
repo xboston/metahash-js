@@ -26,20 +26,20 @@
   },
   "dependencies": {
     "crypto-js": "^4.0.0",
-    "dohdec": "^2.1.0",
-    "elliptic": "^6.5.2",
+    "dohdec": "^3.1.0",
+    "elliptic": "^6.5.4",
     "key-encoder": "^2.0.3",
-    "locutus": "^2.0.11",
-    "node-fetch": "^2.6.0"
+    "locutus": "^2.0.14",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-commonjs": "^18.0.0",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^8.0.1",
+    "@rollup/plugin-node-resolve": "^11.2.1",
     "@stream-io/rollup-plugin-node-builtins": "^2.1.5",
-    "rollup": "^2.14.0",
+    "rollup": "^2.44.0",
     "rollup-plugin-node-globals": "^1.4.0",
-    "rollup-plugin-terser": "^6.1.0"
+    "rollup-plugin-terser": "^7.0.2"
   },
   "scripts": {
     "build": "rollup -c"

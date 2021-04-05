@@ -1,6 +1,7 @@
 # MetaHash JS SDK
 
 ## Usage
+[Demo portal](https://playground.metahash.dev/)
 
 ### NodeJS
 ```javascript

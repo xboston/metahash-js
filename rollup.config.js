@@ -30,7 +30,6 @@ export default {
             // preferBuiltins: true
         }),
         commonjs(),
-        globals(),
-        builtins(),
+        globals()
     ]
 };
