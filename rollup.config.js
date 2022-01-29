@@ -21,6 +21,7 @@ export default {
         },
     ],
     plugins: [
+        builtins(),
         json({
             compact: true,
         }),
