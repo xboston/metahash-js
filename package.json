@@ -25,11 +25,11 @@
     "url": "https://github.com/xboston/metahash-js/issues"
   },
   "dependencies": {
+    "bn.js": "^5.2.0",
     "crypto-js": "^4.0.0",
     "dohdec": "^3.1.0",
     "elliptic": "^6.5.4",
     "key-encoder": "^2.0.3",
-    "locutus": "^2.0.14",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {

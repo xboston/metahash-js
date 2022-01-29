@@ -4,7 +4,8 @@ const encHex = require('crypto-js/enc-hex');
 const KeyEncoder = require('key-encoder');
 const PEM = require('./PEM');
 
-const pack = require('locutus/php/misc/pack');
+const BN = require('bn.js');
+
 const EC = require('elliptic').ec;
 
 const defaultCurve = 'secp256k1';
@@ -43,15 +44,16 @@ function binToHex(value) {
     return o;
 }
 
-function intToHexHandler(firstFormat, firstValue, secondFormat, SecondValue) {
-    return binToHex(pack(firstFormat, firstValue)) + (secondFormat ? binToHex(pack(secondFormat, SecondValue)) : '');
-}
-
 function intToHex(value) {
-    if (value < 250) return intToHexHandler('C', value);
-    else if (value < 65536) return intToHexHandler('C', 250, 'v', value);
-    else if (value < 4294967296) return intToHexHandler('C', 251, 'V', value);
-    else return intToHexHandler('C', 252, '@', value);
+    if (value < 250) {
+        return (new BN(value)).toBuffer('le').toString('hex');
+    } else if (value < 65536) {
+        return (new BN(250).toBuffer('le', 1).toString('hex')) + (new BN(value).toBuffer('le', 2).toString('hex'));
+    } else if (value < 4294967296) {
+        return (new BN(251).toBuffer('le', 1).toString('hex')) + (new BN(value).toBuffer('le', 4).toString('hex'));
+    } else {
+        return (new BN(252).toBuffer('le', 1).toString('hex')) + (new BN(value).toBuffer('le', 8).toString('hex'));
+    }
 }
 
 class Wallet {
