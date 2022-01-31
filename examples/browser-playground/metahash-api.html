@@ -5,10 +5,10 @@
 	<title>MetaHash.API playground</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<link rel="stylesheet" href="https://playground.metahash.dev/media/bootstrap.min.css">
-	<link rel="stylesheet" href="https://playground.metahash.dev/media/main.css">
-	<link rel="shortcut icon" href="https://playground.metahash.dev/media/favicon.ico" type="image/x-icon" />
-	<script src="/metahash.js"></script>
+	<link rel="stylesheet" href="media/bootstrap.min.css">
+	<link rel="stylesheet" href="media/main.css">
+	<link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon" />
+	<script src="https://unpkg.com/metahash-js@0.4.0/dist/metahash.min.js"></script>
 </head>
 
 <body>
@@ -17,13 +17,16 @@
 			<div class="container">
 				<span class="navbar-brand">
 					<a href="/">
-						<img src="https://playground.metahash.dev/media/logo.svg" class="d-inline-block align-top" alt="MetaHash">
+						<img src="media/logo.svg" class="d-inline-block align-top" alt="MetaHash">
 					</a>
-					<a href="playground.html">
+					<a href="index.html">
 						| js-<span>crypto</span>
 					</a>
-					<a href="playground-api.html">
+					<a href="metahash-api.html">
 						| js-<span>api</span>
+					</a>
+					<a href="metahash-bonus.html">
+						| <span>bonus</span>
 					</a>
 				</span>
 			</div>
@@ -49,8 +52,8 @@
 												<label>To:</label>
 												<input type="text" value="" class="form-control to" name="to" required>
 												<label>Value ( <code>1 = 0.000001 MHC</code> ):</label>
-												<input type="number" value="" class="form-control value"
-													name="value" required>
+												<input type="number" min="0.000001" value="" class="form-control value" name="value"
+													required>
 												<label>Fee:</label>
 												<input type="number" value="0" class="form-control fee" name="fee">
 												<label>Data ( <code>0[xX][0-9a-fA-F]+</code> ? ):</label>
@@ -194,8 +197,8 @@
 												<input type="number" min="0" value="0" class="form-control beginTx"
 													name="beginTx">
 												<label>countTxs:</label>
-												<input type="number" value="10" min="1" max="9999"
-													class="form-control countTxs" name="countTxs">
+												<input type="number" value="10" min="1" max="9999" class="form-control countTxs"
+													name="countTxs">
 											</div>
 											<div class="form-group">
 												<button class="btn btn-success" type="submit">Get</button>
@@ -350,7 +353,8 @@
 				'#fetchBalance', '#fetchBalance .address', '#fetchBalance .log',
 				'#fetchBalances', '#fetchBalances .address1', '#fetchBalances .address2', '#fetchBalances .address3',
 				'#fetchBalances .log',
-				'#fetchHistory', '#fetchHistory .address', '#fetchHistory .log', '#fetchHistory .countTxs', '#fetchHistory .beginTx',
+				'#fetchHistory', '#fetchHistory .address', '#fetchHistory .log', '#fetchHistory .countTxs',
+				'#fetchHistory .beginTx',
 				'#getAddressDelegations', '#getAddressDelegations .address', '#getAddressDelegations .log',
 				'#getAddressDelegations .countTxs', '#getAddressDelegations .beginTx',
 				'#getNonce', '#getNonce .address', '#getNonce .log',

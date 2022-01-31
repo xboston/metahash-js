@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>MetaHash.API playground</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="media/bootstrap.min.css">
+	<link rel="stylesheet" href="media/main.css">
+	<link rel="shortcut icon" href="media/favicon.ico" type="image/x-icon" />
+	<script src="https://unpkg.com/metahash-js@0.3.0/dist/metahash.min.js"></script>
+</head>
+
+<body>
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-dark">
+			<div class="container">
+				<span class="navbar-brand">
+					<a href="/">
+						<img src="media/logo.svg" class="d-inline-block align-top" alt="MetaHash">
+					</a>
+					<a href="index.html">
+						| js-<span>crypto</span>
+					</a>
+					<a href="metahash-api.html">
+						| js-<span>api</span>
+					</a>
+					<a href="metahash-bonus.html">
+						| <span>bonus</span>
+					</a>
+				</span>
+			</div>
+		</nav>
+	</header>
+	<section class="content">
+		<main role="main" class="container">
+
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<form id="createandsend">
+								<fieldset>
+									<div class="row">
+										<div class="col">
+											<h5 class="card-title">Undelegate </h5>
+											<br>
+											<div class="form-group">
+												<label>privateKey:</label>
+												<textarea class="form-control fromPrivateKey" name="fromPrivateKey"
+													rows="3" required placeholder="307..."></textarea>
+												<label>To:</label>
+												<input type="text" value="" class="form-control to" name="to" readonly placeholder="auto">
+												<label>Value:</label>
+												<input type="number" value="0" class="form-control value" name="value"
+													readonly>
+												<label>Fee:</label>
+												<input type="number" value="0" class="form-control fee" name="fee"
+													readonly>
+												<label>Data:</label>
+												<input type="text" value='{"method":"undelegate"}'
+													class="form-control data" name="data" readonly>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-success" type="submit">Undelegate</button>
+											</div>
+											<div class="form-group">
+												<label for="get-block-by-number-number">result:</label>
+												<textarea class="form-control result" name="result" rows="4"
+													readonly></textarea>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</main>
+	</section>
+	<br>
+	<footer class="footer">
+		<div class="container-fluid">
+			<span class="text-muted"><a href="https://metahash.dev" target="_blank">MetaHash.DEV</a></span>
+		</div>
+	</footer>
+	<script>
+		const camelCase = (str) => {
+			str = str.replace(/[=\[\]"]/g, ' ').replace(/  +/g, ' ').replace(/[#\.]/g, '');
+			str = str.replace(/-([a-z])/g, (_m, l) => {
+				return l.toUpperCase();
+			});
+			return str.replace(/ ([a-z])/g, (_m, l) => {
+				return l.toUpperCase();
+			});
+		}
+
+		const initHtmlElements = ($htmlElements) => {
+			for (let name in $htmlElements) {
+				let nameConst = $htmlElements[name];
+				nameConst = camelCase(nameConst);
+				eval(`window.$${nameConst} = document.querySelector('${$htmlElements[name]}');`);
+			}
+		};
+
+		initHtmlElements(
+			[
+				'#createandsend', '#createandsend .fromPrivateKey', '#createandsend .to', '#createandsend .value',
+				'#createandsend .fee', '#createandsend .data', '#createandsend .result',
+			]
+		);
+
+		$createandsend.addEventListener('submit', (e) => {
+			e.preventDefault();
+
+			const API = MetaHash.API;
+			const Wallet = MetaHash.Wallet;
+
+			const wallet = Wallet.fromPrivateKey($createandsendFromPrivateKey.value);
+			const api = new API('https://proxy.metahash.dev', 'https://tor.metahash.dev');
+			$createandsendTo.value = wallet.address;
+
+			api.getNonce({
+				address: wallet.address
+			}).then((nonce) => {
+				const to = wallet.address;
+				const value = $createandsendValue.value;
+				const fee = $createandsendFee.value;
+				const data = $createandsendData.value;
+
+				const tx = wallet.createTx({
+					to,
+					value,
+					fee,
+					nonce,
+					data
+				});
+
+				api.sendTx(tx).then((result) => {
+					$createandsendResult.value = JSON.stringify(result, null, 4);
+				});
+			});
+		});
+	</script>
+</body>
+
+</html>
